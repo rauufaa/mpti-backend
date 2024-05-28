@@ -1,0 +1,527 @@
+openapi: '3.0.2'
+info:
+  title: API Design dan Dokumentasi Pangkalan Elpiji
+  version: '1.0'
+  description: 'Team Inspire'
+  
+servers:
+  - url: http://localhost:5000/
+
+paths:
+  /users/login:
+    post:
+      summary: 'Login Aplikasi'
+      description: 'Mengirim informasi username dan password kemudian akan mendapatkan token untuk mengakses ke private route'
+      parameters:
+        - name: Authorization
+          schema:
+            type: string
+          in: header
+          required: true
+      tags:
+        - "User"
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 5
+                  maxLength: 20
+                password:
+                  type: string
+                  minLength: 6
+                  maxLength: 20
+            example:
+              username: rauufaa
+              password: macanku11
+
+      responses:
+        '200':
+          description: Berhasil login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data: 
+                    type: object
+                    properties:
+                      token: 
+                        type: string
+
+        '400':
+          description: Gagal Login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /users/logout:
+    post: 
+      summary: Logout Aplikasi
+      parameters:
+        - name: Authorization
+          schema:
+            type: string
+          in: header
+          required: true
+      tags:
+        - "User"
+      security:
+        - Authorization: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Berhasil Logout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Logout success
+
+  /users/send_email:
+    post: 
+      summary: Kirim Email 
+      description: Mengirim email yang akan diubah password
+      tags:
+        - "Ubah password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  pattern: "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@gmail\\.com$"
+                  example: "rauuf@gmail.com"
+      responses:
+        '200':
+          description: Email terdaftar
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Send email success
+
+  /users/send_code:
+    post: 
+      summary: Kirim kode OTP
+      description: Kirim kode yang diterima dari email
+      tags:
+        - "Ubah password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code: 
+                  type: number
+                  minLength: 6
+                  maxLength: 6
+                  example: 123456
+                email:
+                  type: string
+                  maxLength: 100
+                  pattern: "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@gmail\\.com$"
+                  example: "rauuf@gmail.com"
+      responses:
+        '200':
+          description: Berhasil mengirim kode
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Authorized
+  
+  /users/send_repass:
+    post: 
+      summary: Kirim password baru
+      description: Kirim password baru untuk email yang lupa
+      tags:
+        - "Ubah password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code: 
+                  type: number
+                  minLength: 6
+                  maxLength: 6
+                  example: 123456
+                email:
+                  type: string
+                  maxLength: 100
+                  pattern: "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@gmail\\.com$"
+                  example: "rauuf@gmail.com" 
+                password:
+                  type: string
+                  minLength: 6
+                  maxLength: 100
+                repassword:
+                  type: string
+                  minLength: 6
+                  maxLength: 100
+                  
+
+                  
+      responses:
+        '200':
+          description: Berhasil mengubah password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Success  
+        '400': 
+          description: Gagal mengubah password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:  
+                    type: string
+                    
+              examples:
+                requesterror:
+                  description: Request body tidak valid
+                  value:
+                    error: Request error
+  
+  /consuments:
+    get: 
+      summary: List semua konsumen
+      description: Daftar semua konsumen terdaftar
+      security:
+        - Authorization: []
+      tags:
+        - "Konsumen"
+      parameters:
+        - name: nik 
+          schema:
+            type: string
+            example: 1810021306030001
+          in: query
+
+      
+        
+
+      
+                 
+      responses:
+        '200':
+          description: Berhasil menambah user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Success  
+        '400': 
+          description: Gagal menambah konsumen
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:  
+                    type: string
+                    example: Failed 
+  /consuments/register:
+    post: 
+      summary: Konsumen baru
+      description: Mendaftarkan konsumen baru
+      security:
+        - Authorization: []
+      tags:
+        - "Konsumen"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nik:
+                  type: string
+                nama:
+                  type: string
+                tipe:
+                  type: string
+                 
+      responses:
+        '200':
+          description: Berhasil menambah user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Success  
+        '400': 
+          description: Gagal menambah konsumen
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:  
+                    type: string
+                    example: Failed   
+
+  /transactions:
+    post: 
+      summary: Menambah transaksi
+      description: Menambah transaksi pembelian
+      security:
+        - Authorization: []
+      tags:
+        - "Transaksi"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nik:
+                  type: string
+                detail:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      idGas:
+                        type: number
+                      jumlah:
+                        type: number    
+      responses:
+        '200':
+          description: Berhasil menambah transaksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Success  
+        '400': 
+          description: Gagal menambah transaksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:  
+                    type: string
+                    example: Failed 
+
+    get:
+      summary: Get semua transaksi
+      security:
+        - Authorization: []
+      tags:
+        - "Transaksi"   
+      parameters:
+        - name: from
+          schema:
+            type: string
+            example: 20-13-2020
+          in: query
+        - name: to
+          schema:
+            type: string
+            example: 23-13-2020
+          in: query
+      responses:
+        '200':
+          description: Berhasil melihat transaksi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        nik:
+                          type: string
+                        nama:
+                          type: string
+                        waktu:
+                          type: string
+                        input: 
+                          type: string
+
+  /gas:
+    get:
+      summary: Get list semua gas
+      parameters:
+        - name: Authorization
+          schema:
+            type: string
+          in: header
+          required: true
+      
+      tags:
+        - "Gas"   
+      
+      responses:
+        '200':
+          description: Berhasil list gas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        nama:
+                          type: string
+                        sisa:
+                          type: string
+                        harga: 
+                          type: object
+                          properties:
+                            isi: 
+                              type: number
+                              example: 200000
+                            kosong: 
+                              type: number
+                              example: 170000
+                            tukar:
+                              type: number
+                              example: 50000
+  
+  /gas/:id:
+    post:
+      summary: Ubah data gas
+      parameters:
+        - name: Authorization
+          schema:
+            type: string
+          in: header
+          required: true
+        - name: id
+          schema:
+            type: number
+          in: path
+          required: true
+        
+      security:
+        - Authorization: []
+      tags:
+        - "Gas"   
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nama:
+                  type: string
+                isi: 
+                  type: number
+                  example: 200000
+                kosong: 
+                  type: number
+                  example: 170000
+                tukar:
+                  type: number
+                  example: 50000
+      
+      responses:
+        '200':
+          description: Berhasil ubah gas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: string
+                    example: Success
+                    
+
+components:
+  securitySchemes:
+    Authorization:
+      description: Token untuk mengakses data 
+      type: apiKey
+      name: Authorization
+      in: header
+         
+
+    
+                 
