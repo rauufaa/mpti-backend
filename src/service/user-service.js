@@ -97,7 +97,7 @@ const send_email_forgot_pass = async(request) => {
     let [resultUser, field] = await databaseQuery(query, params);
 
     if(resultUser.length == 0){
-        throw new ResponseError(400, "User not found")
+        throw new ResponseError(400, "Email tidak ditemukan")
     }
 
 
@@ -218,7 +218,7 @@ const send_code_forgot_pass = async(request) => {
     const [resultUser, field] = await databaseQuery(query, params);
 
     if(resultUser.length == 0){
-        throw new ResponseError(400, "Unauthorized")
+        throw new ResponseError(400, "Kode Salah")
     }
 
     // await sendEmailUsingHosting(codeRequest.email)

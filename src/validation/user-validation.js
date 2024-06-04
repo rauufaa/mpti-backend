@@ -18,8 +18,8 @@ const codeOtpUserValidation = Joi.object({
 const repassUserValidation = Joi.object({
     code: Joi.string().min(6).max(6).required(),
     email: Joi.string().max(100).pattern(new RegExp("^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@gmail\.com$")).required(),
-    password: Joi.string().min(6).max(100).required(),
-    repassword: Joi.string().min(6).max(100).required(),
+    newPass: Joi.string().min(6).max(100).required(),
+    reNewPass: Joi.string().min(6).max(100).required(),
 })
 
 const logoutUserValidation = Joi.object({

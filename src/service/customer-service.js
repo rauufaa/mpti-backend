@@ -23,8 +23,25 @@ const cekNik = async (request) => {
         console.log("hola")
         query = "WITH raw_data as (SELECT id from pengiriman_gas ORDER BY id DESC LIMIT 1) SELECT COUNT(*) as jumlah_pembelian FROM pembelian_gas, raw_data WHERE pembelian_gas.nik_konsumen_pembelian=? AND pembelian_gas.id_pengiriman_gas=raw_data.id";
         
+        let query2 = `WITH raw_data AS 
+                    (SELECT 
+                        pengiriman_gas.id AS id,
+                    detail_pengiriman.jumlah AS jumlah_pengiriman
+                    FROM pengiriman_gas 
+                    INNER JOIN detail_pengiriman 
+                    ON pengiriman_gas.id = detail_pengiriman.id_pengiriman 
+                    WHERE detail_pengiriman.jumlah !=0 
+                    ORDER BY pengiriman_gas.id ) 
+                    SELECT 
+                            raw_data.id AS id_pengiriman , 
+                            COUNT(*) as jumlah_pembelian 
+                    FROM pembelian_gas RIGHT JOIN raw_data ON pembelian_gas.id_pengiriman_gas=raw_data.id 
+                    WHERE pembelian_gas.nik_konsumen_pembelian='1810021306030001' 
+                    GROUP BY raw_data.id; `
         let [resultCount, fieldCekup] = await databaseQuery(query, params);
-        if(resultUser.at(0).jumlah_pembelian == 1){
+        
+        if(resultCount.at(0).jumlah_pembelian == 1){
+            console.log("rauffa")
             throw new ResponseError(400, "Pelanggan sudah melakukan pembelian")
         }
     }
