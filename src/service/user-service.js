@@ -10,6 +10,8 @@ import { google } from "googleapis"
 // import {  oAuth2Client } from "../application/google-auth.js"
 import process from "process";
 
+import jwt from "jsonwebtoken"
+
 import fs from "fs/promises"
 import path from "path";
 import { authorize } from "../application/google-auth.js"
@@ -35,7 +37,7 @@ const login = async (request) => {
     const loginRequest = validate_object(loginUserValidation, request)
     console.log(request)
 
-    let query = "SELECT username, nama, password FROM users WHERE username = ?"
+    let query = "SELECT username, nama, email, password FROM users WHERE username = ?"
     let params = [loginRequest.username]
     let [resultUser, field] = await databaseQuery(query, params)
     // console.log(resultUser.at(0).password)
@@ -44,6 +46,7 @@ const login = async (request) => {
     }
     const nama = resultUser.at(0).nama
     const username = resultUser.at(0).username
+    const email = resultUser.at(0).email
     console.log("belum error")
 
     const isPasswordValid = await bcrypt.compare(loginRequest.password, resultUser.at(0).password);
@@ -53,8 +56,15 @@ const login = async (request) => {
     }
 
     const token = uuid().toString()
+    // const accessToken = jwt.sign({username, nama, email}, process.env.ACCESS_TOKEN_SECRET, {
+    //     expiresIn: "20s"
+    // })
+
+    // const refreshToken = jwt.sign({username, nama, email}, process.env.REFRESH_TOKEN_SECRET, {
+    //     expiresIn: "1d"
+    // })
+    
     query = "UPDATE users SET token=? WHERE username=?"
-    console.log(token)
     params = [token, loginRequest.username]
     resultUser = await databaseQuery(query, params)
     console.log("ini error")
@@ -64,7 +74,7 @@ const login = async (request) => {
     console.log("ini error")
     
 
-    return {token, nama, username}
+    return {token, nama}
 }  
 
 const logout = async (request) => {

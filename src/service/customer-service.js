@@ -49,6 +49,10 @@ const cekNik = async (request) => {
     return resultUser.at(0)
 }
 
+const addCustomer = async (request) => {
+    
+}
+
 
 export default {
     cekNik

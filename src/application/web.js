@@ -3,6 +3,7 @@ import { publicRouter } from "../routes/public-api.js"
 import { errorMiddleware } from "../middleware/error-middleware.js"
 import cors from "cors"
 import { userRouter } from "../routes/api.js"
+import cookieParser from "cookie-parser"
 
 
 
