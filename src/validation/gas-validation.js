@@ -9,6 +9,12 @@ const addGasValidation = Joi.object({
     information: Joi.string().allow(null, '').max(100).optional(),
 })
 
+const updatePriceGasValidation = Joi.object({
+    inputDate: joi_format.date().format('YYYY-MM-DDTHH:mm').required(),
+    priceBuy: Joi.number().positive().required(),
+    priceSell: Joi.number().positive().required(),
+})
+
 const searchGasStokHistoryValidation = Joi.object({
     page: Joi.number().min(1).positive().default(1),
     size: Joi.number().min(1).positive().max(100).default(10),
@@ -33,10 +39,14 @@ const downloadGasSalesHistoryValidation = Joi.object({
     endDate: joi_format.date().format('YYYY-MM-DDTHH:mm').optional(),
 })
 
+const deleteGasStokValidation = Joi.number().positive().required()
+
 export {
     addGasValidation,
     searchGasStokHistoryValidation,
     searchGasSalesHistoryValidation,
     downloadGasStokHistoryValidation,
     downloadGasSalesHistoryValidation,
+    updatePriceGasValidation,
+    deleteGasStokValidation
 }

@@ -19,10 +19,11 @@ const cekNik = async (request) => {
 
     console.log(resultUser)
 
-    if(resultUser.at(0).tipe == "Rumah Tangga"){
+    if(resultUser.at(0).tipe == "RUMAH_TANGGA"){
         console.log("hola")
-        query = "WITH raw_data as (SELECT id from pengiriman_gas ORDER BY id DESC LIMIT 1) SELECT COUNT(*) as jumlah_pembelian FROM pembelian_gas, raw_data WHERE pembelian_gas.nik_konsumen_pembelian=? AND pembelian_gas.id_pengiriman_gas=raw_data.id";
-        
+        query = "WITH id_pengiriman_terbaru AS (SELECT id FROM `detail_pengiriman` ORDER BY id DESC LIMIT 1) SELECT * FROM id_pengiriman_terbaru, `detail_pembelian` AS a JOIN `pembelian_gas` AS b ON a.id_pembelian = b.id WHERE b.id_user = ? AND a.id_detail_pengiriman = id_pengiriman_terbaru.id"
+        // query = "WITH raw_data as (SELECT id from pengiriman_gas ORDER BY id DESC LIMIT 1) SELECT COUNT(*) as jumlah_pembelian FROM pembelian_gas, raw_data WHERE pembelian_gas.nik_konsumen_pembelian=? AND pembelian_gas.id_pengiriman_gas=raw_data.id";
+        params = [resultUser.at(0).id]
         let query2 = `WITH raw_data AS 
                     (SELECT 
                         pengiriman_gas.id AS id,
@@ -40,7 +41,7 @@ const cekNik = async (request) => {
                     GROUP BY raw_data.id; `
         let [resultCount, fieldCekup] = await databaseQuery(query, params);
         
-        if(resultCount.at(0).jumlah_pembelian == 1){
+        if(resultCount.length > 1){
             console.log("rauffa")
             throw new ResponseError(400, "Pelanggan sudah melakukan pembelian")
         }
@@ -50,7 +51,7 @@ const cekNik = async (request) => {
 }
 
 const addCustomer = async (request) => {
-    
+    console.log(request)
 }
 
 

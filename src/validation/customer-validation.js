@@ -6,11 +6,10 @@ const nikValidation = Joi.object({
 })
 
 const addCustomerValidation = Joi.object({
-    nik:
-    name:
-    address:
-    type:
-    
+    nik: Joi.string().max(16).min(16).pattern(new RegExp("^[0-9]")),
+    name: Joi.string().max(100).min(1),
+    address: Joi.string().max(100).min(1),
+    type: Joi.number().positive().default(1).max(2),
 })
 
 

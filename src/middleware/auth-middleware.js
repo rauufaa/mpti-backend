@@ -9,7 +9,7 @@ export const authMiddleware = async (req, res, next) => {
             errors: "Unauthorized"
         }).end();
     } else {
-        let query = "SELECT username, token FROM users WHERE token=?"
+        let query = "SELECT id, username, token FROM users WHERE token=?"
         let params = [token]
         let [user, fields] = await databaseQuery(query, params)
 

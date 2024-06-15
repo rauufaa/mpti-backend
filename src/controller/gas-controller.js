@@ -1,9 +1,63 @@
 import gasService from "../service/gas-service.js";
 
 
+const stok = async (req, res, next) => {
+    try {
+        // const user = req.user;
+        // const request = {
+        //     inputDate: req.body.
+        //     countStok:
+        //     information:
+        // }
+        const result = await gasService.stok();
+        res.status(200).json({
+            data: result,
+            ok: true
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+const update = async (req, res, next) => {
+    try {
+        const result = await gasService.update(req);
+        res.status(200).json({
+            data: result,
+            ok: true
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 const add = async (req, res, next) => {
     try {
-        const result = await gasService.add(req);
+        // const user = req.user;
+        // const request = {
+        //     inputDate: req.body.
+        //     countStok:
+        //     information:
+        // }
+        const result = await gasService.add(req.user, req.body);
+        res.status(200).json({
+            data: result,
+            ok: true
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+const deleteStok = async (req, res, next) => {
+    try {
+        // const user = req.user;
+        // const request = {
+        //     inputDate: req.body.
+        //     countStok:
+        //     information:
+        // }
+        const result = await gasService.deleteStok(req.user, req.params.id);
         res.status(200).json({
             data: result,
             ok: true
@@ -94,5 +148,8 @@ export default {
     history,
     saleshistory,
     printHistory,
-    printSalesHistory
+    printSalesHistory,
+    stok,
+    update,
+    deleteStok
 }

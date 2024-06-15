@@ -11,6 +11,17 @@ import userService from "../service/user-service.js";
 //     }
 // }
 
+const cekUser = async (req, res, next) => {
+    try {
+        res.status(200).json({
+            data: "User authorized",
+            ok: true
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
 const login = async (req, res, next) => {
     try {
         const result = await userService.login(req.body);
@@ -76,5 +87,6 @@ export default{
     logout,
     send_email,
     send_code,
-    send_repass
+    send_repass,
+    cekUser
 }
